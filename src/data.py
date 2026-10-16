@@ -9,12 +9,17 @@ DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 
 def load_data(tickers=TICKERS, start=START, end=END, cache=True):
+    DATA_DIR.mkdir(exist_ok=True)
     cache_file = DATA_DIR / "prices.csv"
+
     if cache and cache_file.exists():
         prices = pd.read_csv(cache_file, index_col=0, parse_dates=True)
     else:
-        prices = yf.download(tickers, start=start, end=end, auto_adjust=True)["Close"]
+        prices = yf.download(tickers, start=start, end=end, auto_djust=True)["Close"]
         prices = prices.dropna(how="all")
-        prices.to_csv(cache_file)
+        try:
+            prices.to_csv(cache_file)
+        except OSError:
+            pass
     returns = prices.pct_change().dropna()
     return prices, returns
