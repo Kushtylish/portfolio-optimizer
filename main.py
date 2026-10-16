@@ -19,13 +19,16 @@ def run():
 
     results = {}
     curves = {}
+    turnovers = {}
     for method, est in configs:
         ret, w, to = backtest(returns, method=method, estimator=est)
         name = f"{method}_{est}"
         results[name] = metrics(ret)
         curves[name] = (1 + ret).cumprod()
+        turnovers[name] = to.mean()
 
     summary = pd.DataFrame(results).T
+    summary["Turnover"] = pd.Series(turnovers)
     print(summary.round(3))
 
     ax = pd.DataFrame(curves).plot(figsize=(12, 6), title="Cumulative Returns")
