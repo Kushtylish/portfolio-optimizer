@@ -15,7 +15,7 @@ def load_data(tickers=TICKERS, start=START, end=END, cache=True):
     if cache and cache_file.exists():
         prices = pd.read_csv(cache_file, index_col=0, parse_dates=True)
     else:
-        prices = yf.download(tickers, start=start, end=end, auto_djust=True)["Close"]
+        prices = yf.download(tickers, start=start, end=end, auto_adjust=True)["Close"]
         prices = prices.dropna(how="all")
         try:
             prices.to_csv(cache_file)
